@@ -1,0 +1,4 @@
+5 mục tiêu chính của CleanCode là:
+- Giúp code dễ đọc, đơn giản, tránh code thừa và được viết tốt
+- Tăng giá trị cho phần mềm với code hiện tại
+- Bất cứ ai cũng có thể đọc và hiểu trong thời gian ngắn

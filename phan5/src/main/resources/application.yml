@@ -2,8 +2,6 @@ logging:
   level:
     course.configuration.logging: DEBUG
     course.error: ERROR
-  file.name: error.log
-  file.path: logs
 
 spring:
   datasource:

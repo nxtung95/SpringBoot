@@ -17,11 +17,10 @@ public class CourseService {
     private final CourseRepository courseRepository;
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "courses", key = "#keyword", condition = "#keyword != null") // Caching data when client finds all courses
+    @Cacheable(value = "courses", key = "#keyword", condition = "#keyword != null && #keyword != \"\"") // Caching data when client finds all courses with keyword
     public List<CourseResponseDto> findAllCourseByKeywordName(String keyword) {
         Optional<String> nameOption = Optional.ofNullable(keyword);
         keyword = nameOption.isPresent() ? nameOption.get() : "";
-        List<CourseResponseDto> courses = courseRepository.findAllByNameContaining(keyword);
-        return courses;
+        return courseRepository.findAllByNameContaining(keyword);
     }
 }

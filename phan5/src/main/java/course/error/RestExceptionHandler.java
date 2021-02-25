@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -39,7 +40,7 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler({ ServiceRuntimeException.class })
-    public ResponseEntity<ApiError> handleExistEmailException(ServiceRuntimeException ex) {
+    public ResponseEntity<ApiError> handleServiceRuntimeException(ServiceRuntimeException ex) {
         ApiError apiError = new ApiError(ex.getErrorCode(), ex.getMessage());
         log.error("Status Error: {}, Message: {}", ex.getHttpStatus(), ex.getMessage());
         return buildResponseEntity(apiError, ex.getHttpStatus());
@@ -47,14 +48,21 @@ public class RestExceptionHandler {
 
     @ExceptionHandler({ DataIntegrityViolationException.class })
     public ResponseEntity<ApiError> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
-        ApiError apiError = new ApiError(ErrorCode.DB_COURSE, ErrorMessage.DB_COURSE);
-        log.error("Status Error: {}, Message: {}", HttpStatus.BAD_REQUEST, ErrorMessage.DB_COURSE);
+        ApiError apiError = new ApiError(ErrorCode.DB_COURSE, ex.getMessage());
+        log.error("Status Error: {}, Message: {}", HttpStatus.BAD_REQUEST, ex.getMessage());
+        return buildResponseEntity(apiError, HttpStatus.BAD_REQUEST);
+    }
+    
+    @ExceptionHandler({ UsernameNotFoundException.class })
+    public ResponseEntity<ApiError> handleUsernameNotFoundException(UsernameNotFoundException ex) {
+        ApiError apiError = new ApiError(ErrorCode.USER_E008, ex.getMessage());
+        log.error("Status Error: {}, Message: {}", HttpStatus.BAD_REQUEST, ex.getMessage());
         return buildResponseEntity(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ Exception.class })
     public ResponseEntity<ApiError> handleOtherException(Exception ex) {
-        ApiError apiError = new ApiError(ErrorCode.OTHER_ERROR, ErrorMessage.OTHER_ERROR);
+        ApiError apiError = new ApiError(ErrorCode.OTHER_ERROR, ex.getMessage());
         log.error("Status Error: {}, Message: {}", HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
         return buildResponseEntity(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }

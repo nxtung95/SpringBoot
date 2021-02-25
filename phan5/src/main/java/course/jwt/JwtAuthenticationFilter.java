@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,13 +15,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import course.error.ErrorCode;
-import course.error.ErrorMessage;
-import course.exception.ServiceRuntimeException;
 import course.service.login.LoginUserService;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtTokenProvider tokenProvider;
@@ -34,9 +28,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String jwt = getJwtFromRequest(request);
-//        if (SecurityContextHolder.getContext().getAuthentication() != null && jwt == null) {
-//            throw new ServiceRuntimeException(HttpStatus.UNAUTHORIZED, ErrorCode.AUTH_E001, ErrorMessage.AUTH_E001);
-//        }
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Long userId = tokenProvider.getUserIdFromJWT(jwt);
             UserDetails userDetails = customUserDetailsService.loadUserById(userId);

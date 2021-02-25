@@ -28,7 +28,6 @@ public class LoginController {
 
     @PostMapping("api/v1/login")
     public LoginResponse authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println("Login request " + loginRequest);
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
